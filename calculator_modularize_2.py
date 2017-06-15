@@ -55,6 +55,20 @@ def tokenize(line):
 def evaluate(tokens):
     answer = 0
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
+
+    index = 1
+    while index < len(tokens):
+        if tokens[index]['type'] in {'MULTIPLY', 'DIVIDE'}:
+            calculated = 0.0
+            if tokens[index]['type'] == 'MULTIPLY':
+                calculated = tokens[index - 1]['number'] * tokens[index + 1]['number']
+            elif tokens[index]['type'] == 'DIVIDE':
+                calculated = tokens[index - 1]['number'] / tokens[index + 1]['number']
+            tokens[index - 1:index + 2] = [{'type': 'NUMBER', 'number': calculated}]
+            index -= 1
+        index += 1
+
+
     index = 1
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
@@ -62,16 +76,10 @@ def evaluate(tokens):
                 answer += tokens[index]['number']
             elif tokens[index - 1]['type'] == 'MINUS':
                 answer -= tokens[index]['number']
-            elif tokens[index - 1]['type'] == 'MULTIPLY':
-                answer *= tokens[index]['number']
-            elif tokens[index - 1]['type'] == 'DIVIDE':
-                answer /= tokens[index]['number']
-
             else:
                 print 'Invalid syntax'
         index += 1
     return answer
-
 
 def test(line, expectedAnswer):
     tokens = tokenize(line)
@@ -87,6 +95,11 @@ def runTest():
     print "==== Test started! ===="
     test("1+2", 3)
     test("1.0+2.1-3", 0.1)
+    test("1+2+3*5/5", 6)
+    test("2+3*5", 17)
+    test("2+5/5", 3)
+    test("3*5/5", 3)
+
     print "==== Test finished! ====\n"
 
 runTest()
