@@ -61,8 +61,12 @@ def evaluate(tokens):
             calculated = 0.0
             if tokens[index]['type'] == 'MULTIPLY':
                 calculated = tokens[index - 1]['number'] * tokens[index + 1]['number']
+
             elif tokens[index]['type'] == 'DIVIDE':
-                calculated = tokens[index - 1]['number'] / tokens[index + 1]['number']
+                try:
+                    calculated = tokens[index - 1]['number'] / tokens[index + 1]['number']
+                except Exception as e:
+                    print('%r' % e)
             tokens[index - 1:index + 2] = [{'type': 'NUMBER', 'number': calculated}]
             index -= 1
         index += 1
@@ -96,7 +100,7 @@ def runTest():
     test("1+2+3*5/5", 6)
     test("2*5/5", 2)
     test("2.0*5/5.0", 2)
-
+    test("2/0", 0)
     print "==== Test finished! ====\n"
 
 runTest()
@@ -105,6 +109,5 @@ while True:
     print '> ',
     line = raw_input()
     tokens = tokenize(line)
-    shouldEvaluateFirst(tokens)
     answer = evaluate(tokens)
     print "answer = %f\n" % answer
