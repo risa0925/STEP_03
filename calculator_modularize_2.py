@@ -51,7 +51,6 @@ def tokenize(line):
         tokens.append(token)
     return tokens
 
-
 def evaluate(tokens):
     answer = 0
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
@@ -67,7 +66,6 @@ def evaluate(tokens):
             tokens[index - 1:index + 2] = [{'type': 'NUMBER', 'number': calculated}]
             index -= 1
         index += 1
-
 
     index = 1
     while index < len(tokens):
@@ -96,9 +94,8 @@ def runTest():
     test("1+2", 3)
     test("1.0+2.1-3", 0.1)
     test("1+2+3*5/5", 6)
-    test("2+3*5", 17)
-    test("2+5/5", 3)
-    test("3*5/5", 3)
+    test("2*5/5", 2)
+    test("2.0*5/5.0", 2)
 
     print "==== Test finished! ====\n"
 
@@ -108,5 +105,6 @@ while True:
     print '> ',
     line = raw_input()
     tokens = tokenize(line)
+    shouldEvaluateFirst(tokens)
     answer = evaluate(tokens)
     print "answer = %f\n" % answer
